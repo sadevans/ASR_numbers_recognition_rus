@@ -11,7 +11,7 @@ TRAIN_FILE_ID = '15CpIWvVDA6mOlPxyI4-vicyXSqd-EcIb'
 DEV_FILE_ID = '1Jlw09RSJjhJTxdN3VQj5Bph4zRNwOqSL'
 
 
-def _extract_if_archive(path: Path, dest_dir: Path) -> None:
+def _extract_if_archive(path, dest_dir):
     dest_dir.mkdir(parents=True, exist_ok=True)
     suffixes = path.suffixes
     if suffixes[-2:] == ['.tar', '.gz'] or path.suffix == '.tgz':
@@ -25,10 +25,9 @@ def _extract_if_archive(path: Path, dest_dir: Path) -> None:
         )
 
 
-def download_one(file_id: str, out_dir: Path, fuzzy: bool) -> Path:
+def download_one(file_id, out_dir, fuzzy):
     out_dir.mkdir(parents=True, exist_ok=True)
     url = f'https://drive.google.com/uc?id={file_id}'
-    # Каталог + разделитель → gdown подставляет исходное имя файла с Drive
     target_dir = str(out_dir.resolve()) + os.sep
     saved = gdown.download(url, target_dir, quiet=False, fuzzy=fuzzy)
     if not saved:
@@ -36,7 +35,7 @@ def download_one(file_id: str, out_dir: Path, fuzzy: bool) -> Path:
     return Path(saved)
 
 
-def main() -> None:
+def main():
     p = argparse.ArgumentParser()
     p.add_argument(
         '--out-dir',
@@ -48,7 +47,7 @@ def main() -> None:
         '--extract-dir',
         type=Path,
         default=Path('data/gp1'),
-        help='Куда распаковать (общая папка для обоих архивов)',
+        help='Куда распаковать',
     )
     p.add_argument(
         '--no-extract',
@@ -78,7 +77,7 @@ def main() -> None:
             print(f'Extracting {archive_path.name} → {sub} …')
             _extract_if_archive(archive_path, sub)
 
-    print('Done.')
+    print('Done!!!!')
 
 
 if __name__ == '__main__':
