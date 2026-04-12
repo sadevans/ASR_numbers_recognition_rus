@@ -1,0 +1,13 @@
+num2words
+pandas
+numpy
+matplotlib
+torch
+torchaudio
+soundfile
+gdown
+jupyter
+ipykernel
+jiwer
+tensorboard
+tensorboardX
