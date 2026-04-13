@@ -40,13 +40,13 @@ def main():
     p.add_argument(
         '--out-dir',
         type=Path,
-        default=Path('data/gp1_raw'),
+        default=Path('data/'),
         help='Куда сохранить .zip/.tar.gz',
     )
     p.add_argument(
         '--extract-dir',
         type=Path,
-        default=Path('data/gp1'),
+        default=Path('data/'),
         help='Куда распаковать',
     )
     p.add_argument(
