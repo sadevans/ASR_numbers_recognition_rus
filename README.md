@@ -45,7 +45,7 @@ python train.py \
 
 ## Обучение
 
-- **`python train.py`** — основной скрипт для запуска обуечния
+- **`python train.py`** — основной скрипт для запуска обучения
 - **`python run_train.py`** — то же `main()`, с предварительным добавлением `src` в `sys.path`
 
 Чекпоинт с лучшим CER на dev: **`checkpoints/best.pt`**. Логи TensorBoard: **`runs/ctc_baseline`** (по умолчанию).
@@ -73,6 +73,46 @@ tensorboard --logdir runs/ctc_baseline
 
 Метрики на dev: CER, точное совпадение последовательности, разделение по спикерам in-domain / out-of-domain относительно train (`src/metrics.py`). История эпох дополнительно пишется в `metrics.jsonl` в каталоге логов.
 
+## Инференс
+
+Скрипт **`infer.py`** загружает чекпоинт из обучения (`model_state_dict`, поле `args` для SpecAugment), приводит аудио к моно **16 kHz**, делает жадный CTC-декод и при необходимости приводит результат к целому для сабмита (`denormalize_digits_for_submission`). Запуск из корня репозитория.
+
+По умолчанию чекпоинт: **`checkpoints/ctc_besilen/best.pt`**. Путь задаётся флагом **`--checkpoint`**. Устройство: **`--device cuda`** / **`cpu`**
+
+### Распознавание одного или нескольких файлов
+
+Печатаются распознанная строка цифр и целое число в формате сабмита:
+
+```bash
+python infer.py --checkpoint checkpoints/ctc_baseline/best.pt --audio path/to/one.wav path/to/two.wav
+```
+
+### Файл `test.csv` и `submission.csv`
+
+В CSV должна быть колонка **`filename`**. Полный путь к файлу: **`data-root` / `filename`** (как корень данных соревнования).
+
+```bash
+python infer.py --checkpoint checkpoints/сtc_baseline/best.pt \
+  --test-csv path/to/test.csv \
+  --data-root path/to/folder_with_audio \
+  --output submission.csv \
+  --batch-size 16
+```
+
+Если **`--output`** не указан, результат пишется в **`submission.csv`** в текущем каталоге.
+
+### Проверка на `dev.csv`
+
+Считается **CER** по строкам цифр. Нужны те же **`--data-root`** и колонки **`filename`**, **`transcription`** в dev-манифесте.
+
+```bash
+python infer.py --checkpoint checkpoints/ctc_besilene/best.pt \
+  --eval-dev-csv path/to/dev.csv \
+  --data-root path/to/folder_with_audio
+```
+
+Режимы **`--audio`**, **`--test-csv`** и **`--eval-dev-csv`** можно сочетать в одном запуске.
+
 ## Структура проекта
 
 | Путь | Назначение |
@@ -84,6 +124,7 @@ tensorboard --logdir runs/ctc_baseline
 | `src/metrics.py` | CER, accuracy, разрезы по спикерам |
 | `src/text_normalize.py` | Нормализация числа ↔ строка цели / сабмита |
 | `train.py` | Обучение, валидация, `best.pt` |
+| `infer.py` | Инференс: файлы, `test.csv` -> submission, опционально CER на dev |
 | `download_data.py` | Загрузка и распаковка train/dev |
 | `eda_train_dev.ipynb` | EDA |
 | `submit2kaggle_team18.ipynb` | Ноутбук под окружение Kaggle и сабмит |
