@@ -23,7 +23,7 @@ __all__ = ['main', 'parse_args', 'run_training']
 
 def parse_args(argv=None):
     p = argparse.ArgumentParser()
-    root = Path(__file__).resolve().parents[2]
+    root = Path(__file__).resolve().parent
     data = root / 'data'
     p.add_argument('--train-csv', type=Path, default=data / 'train' / 'train.csv')
     p.add_argument('--train-root', type=Path, default=data / 'train')
@@ -226,7 +226,7 @@ def run_training(args):
     train_speakers = load_train_speakers(args.train_csv)
 
     train_tf = None if args.no_augment else make_train_waveform_augment()
-    text_mode: TextNormalizationMode = 'digits'
+    text_mode: TextNormalizationMode = args.text_mode
     loader_train, loader_dev = build_dataloaders(
         args.train_csv,
         args.train_root,
@@ -314,7 +314,7 @@ def run_training(args):
         writer.close()
 
 
-def main(argv | None = None):
+def main(argv=None):
     args = parse_args(argv)
     run_training(args)
 
