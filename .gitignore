@@ -138,6 +138,7 @@ celerybeat.pid
 .env
 .envrc
 .venv
+.venv_plot/
 env/
 venv/
 ENV/
@@ -206,5 +207,9 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 
-./data/
+./data/*
+data/
+*.tar.gz
 ./runs/
+.vscode/
+/runs/
