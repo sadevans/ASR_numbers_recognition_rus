@@ -128,7 +128,7 @@ def parse_args(argv=None):
     p.add_argument(
         '--checkpoint',
         type=Path,
-        default=root / 'checkpoints' / 'best.pt',
+        default=root / 'checkpoints' / 'ctc_baseline' / 'best.pt',
         help='Путь к .pt с model_state_dict и args',
     )
     p.add_argument('--device', type=str, default=None, help='cuda / cpu (по умолчанию авто)')
